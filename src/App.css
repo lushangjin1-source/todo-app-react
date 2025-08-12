@@ -1,0 +1,574 @@
+/* CSS变量定义 */
+:root {
+  /* 浅色主题 */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --text-primary: #333333;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border-color: #e1e5e9;
+  --border-hover: #667eea;
+  --shadow: rgba(0, 0, 0, 0.1);
+  --shadow-hover: rgba(102, 126, 234, 0.1);
+}
+
+/* 深色主题 */
+[data-theme="dark"] {
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-gradient: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #e2e8f0;
+  --text-muted: #a0aec0;
+  --border-color: #4a5568;
+  --border-hover: #667eea;
+  --shadow: rgba(0, 0, 0, 0.3);
+  --shadow-hover: rgba(102, 126, 234, 0.2);
+}
+
+/* 全局样式 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-gradient);
+  min-height: 100vh;
+  padding: 20px;
+  transition: background 0.3s ease;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 40px;
+}
+
+.todo-container {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px var(--shadow);
+  padding: 30px;
+  width: 100%;
+  max-width: 600px;
+  min-height: 500px;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.app-title {
+  text-align: center;
+  color: var(--text-primary);
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: var(--bg-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: color 0.3s ease;
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--shadow-hover);
+}
+
+/* 输入区域 */
+.input-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.todo-input {
+  flex: 1;
+  padding: 15px 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  font-size: 16px;
+  outline: none;
+  transition: all 0.3s ease;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.todo-input:focus {
+  border-color: var(--border-hover);
+  box-shadow: 0 0 0 3px var(--shadow-hover);
+}
+
+.add-button {
+  padding: 15px 25px;
+  background: var(--bg-gradient);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px var(--shadow-hover);
+}
+
+/* 过滤器 */
+.filter-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 25px;
+  justify-content: center;
+}
+
+.filter-btn {
+  padding: 10px 20px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-primary);
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.filter-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--border-hover);
+}
+
+.filter-btn.active {
+  background: var(--bg-gradient);
+  color: white;
+  border-color: transparent;
+}
+
+/* 待办事项列表 */
+.todo-list {
+  margin-bottom: 25px;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 18px;
+  padding: 60px 20px;
+  font-style: italic;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  background: var(--bg-primary);
+}
+
+.todo-item:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 4px 12px var(--shadow-hover);
+}
+
+.todo-item.completed {
+  background: var(--bg-secondary);
+  border-color: var(--border-color);
+  opacity: 0.7;
+}
+
+.todo-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #667eea;
+}
+
+.todo-content {
+  flex: 1;
+  cursor: pointer;
+}
+
+.todo-text {
+  display: block;
+  font-size: 16px;
+  color: var(--text-primary);
+  margin-bottom: 5px;
+  word-break: break-word;
+}
+
+.completed .todo-text {
+  text-decoration: line-through;
+  color: var(--text-muted);
+}
+
+.todo-date {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.edit-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 2px solid var(--border-hover);
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.todo-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-button,
+.delete-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.edit-button {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.edit-button:hover {
+  background: #ffeaa7;
+  transform: scale(1.1);
+}
+
+.delete-button {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.delete-button:hover {
+  background: #f5c6cb;
+  transform: scale(1.1);
+}
+
+/* 底部 */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+  border-top: 2px solid var(--border-color);
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.stats {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.clear-button {
+  padding: 10px 20px;
+  background: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.clear-button:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+/* 优先级选择器样式 */
+.priority-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.priority-select {
+  padding: 8px 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.priority-select:focus {
+  border-color: var(--border-hover);
+}
+
+.priority-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.priority-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+}
+
+/* 优先级颜色 */
+.priority-high {
+  border-left: 4px solid #ef4444;
+}
+
+.priority-medium {
+  border-left: 4px solid #f59e0b;
+}
+
+.priority-low {
+  border-left: 4px solid #10b981;
+}
+
+.priority-low {
+  color: #10b981;
+}
+
+.priority-medium {
+  color: #f59e0b;
+}
+
+.priority-high {
+  color: #ef4444;
+}
+
+/* 待办事项优先级边框样式 */
+.todo-item.priority-high {
+  border-left: 4px solid #ef4444;
+}
+
+.todo-item.priority-medium {
+  border-left: 4px solid #f59e0b;
+}
+
+.todo-item.priority-low {
+  border-left: 4px solid #10b981;
+}
+
+/* 优先级指示器小尺寸样式 */
+.priority-indicator-small {
+  margin: 0 8px;
+}
+
+.priority-selector-small {
+  transform: scale(0.8);
+}
+
+/* 拖拽样式 */
+.drag-handle {
+  cursor: grab;
+  padding: 8px 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+}
+
+.drag-handle:hover {
+  color: var(--text-primary);
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.todo-item.dragging {
+  z-index: 1000;
+  box-shadow: var(--shadow-hover);
+  transform: rotate(2deg);
+}
+
+.todo-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 搜索框样式 */
+.search-container {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 40px 12px 16px;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-hover);
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.clear-search-btn:hover {
+  background: var(--border-color);
+  color: var(--text-primary);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .app {
+    padding-top: 20px;
+  }
+  
+  .todo-container {
+    margin: 0 10px;
+    padding: 20px;
+  }
+  
+  .app-title {
+    font-size: 2rem;
+  }
+  
+  .input-container {
+    flex-direction: column;
+  }
+  
+  .filter-container {
+    flex-wrap: wrap;
+  }
+  
+  .footer {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .todo-item {
+    padding: 15px;
+  }
+  
+  .todo-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .todo-container {
+    margin: 0 5px;
+    padding: 15px;
+  }
+  
+  .app-title {
+    font-size: 1.8rem;
+  }
+  
+  .todo-input {
+    padding: 12px 15px;
+  }
+  
+  .add-button {
+    padding: 12px 20px;
+  }
+}
+
+/* 动画效果 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.todo-item {
+  animation: slideIn 0.3s ease;
+}
+
+/* 滚动条样式 */
+.todo-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.todo-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.todo-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.todo-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
