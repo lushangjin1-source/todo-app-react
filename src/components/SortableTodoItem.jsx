@@ -1,13 +1,8 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, memo } from 'react'
 import { motion } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { 
-  PencilIcon, 
-  TrashIcon, 
-  CheckIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline'
+import { PencilIcon, TrashIcon, CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import PrioritySelector from './PrioritySelector'
 import { useLanguage } from '../contexts/LanguageContext'
 
@@ -268,4 +263,4 @@ function SortableTodoItem({ todo, onToggle, onDelete, onEdit }) {
   )
 }
 
-export default SortableTodoItem
+export default memo(SortableTodoItem)

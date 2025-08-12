@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -30,4 +30,4 @@ function ThemeToggle({ theme, onThemeChange }) {
   );
 }
 
-export default ThemeToggle;
+export default memo(ThemeToggle);

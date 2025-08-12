@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { auth } from '../lib/supabase'
+import { auth, supabase } from '../lib/supabase'
 
 const AuthContext = createContext({})
 
@@ -74,25 +74,35 @@ export const AuthProvider = ({ children }) => {
   }
 
   const signIn = async (email, password) => {
+    setLoading(true)
+    setError(null)
+    setSuccess(null)
+    
     try {
-      setLoading(true)
-      setError(null)
-      setSuccess(null)
-      const { data, error } = await auth.signIn(email, password)
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+      
       if (error) {
         // Provide more user-friendly error messages
         if (error.message === 'Email not confirmed') {
-          throw new Error('Please verify your email address before signing in. Check your inbox for a confirmation email.')
+          throw new Error('请先验证您的邮箱地址。请检查您的邮箱并点击确认链接后再登录。')
         } else if (error.message === 'Invalid login credentials') {
-          throw new Error('Invalid email or password. Please check your credentials and try again.')
+          throw new Error('邮箱或密码错误，请检查后重试。')
+        } else if (error.code === 'email_not_confirmed') {
+          throw new Error('请先验证您的邮箱地址。请检查您的邮箱并点击确认链接后再登录。')
         } else {
           throw error
         }
       }
-      return { data, error: null }
+      
+      setUser(data.user)
+      setSuccess('登录成功！')
+      return { success: true, user: data.user }
     } catch (error) {
       setError(error.message)
-      return { data: null, error }
+      return { error }
     } finally {
       setLoading(false)
     }

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '../contexts/AuthContext'
 import { useLanguage } from '../contexts/LanguageContext'
@@ -70,7 +70,7 @@ const TodoApp = () => {
   }, [user])
 
   // 添加新的待办事项
-  const addTodo = async () => {
+  const addTodo = useCallback(async () => {
     if (!inputValue.trim() || !user) return
     
     try {
@@ -93,10 +93,10 @@ const TodoApp = () => {
       console.error('Error adding todo:', error)
       setError('Failed to add todo')
     }
-  }
+  }, [inputValue, user, selectedPriority, todos.length])
 
   // 切换待办事项完成状态
-  const toggleTodo = async (id) => {
+  const toggleTodo = useCallback(async (id) => {
     if (!user) return
     
     try {
@@ -113,10 +113,10 @@ const TodoApp = () => {
       console.error('Error toggling todo:', error)
       setError('Failed to update todo')
     }
-  }
+  }, [user, todos])
 
   // 删除待办事项
-  const deleteTodo = async (id) => {
+  const deleteTodo = useCallback(async (id) => {
     if (!user) return
     
     try {
@@ -128,10 +128,10 @@ const TodoApp = () => {
       console.error('Error deleting todo:', error)
       setError('Failed to delete todo')
     }
-  }
+  }, [user])
 
   // 编辑待办事项
-  const editTodo = async (id, newText) => {
+  const editTodo = useCallback(async (id, newText) => {
     if (!user || !newText.trim()) return
     
     try {
@@ -145,10 +145,10 @@ const TodoApp = () => {
       console.error('Error editing todo:', error)
       setError('Failed to edit todo')
     }
-  }
+  }, [user])
 
   // 清除已完成的待办事项
-  const clearCompleted = async () => {
+  const clearCompleted = useCallback(async () => {
     if (!user) return
     
     try {
@@ -161,7 +161,7 @@ const TodoApp = () => {
       console.error('Error clearing completed todos:', error)
       setError('Failed to clear completed todos')
     }
-  }
+  }, [user, todos])
 
   // 处理拖拽结束
   const handleDragEnd = async (event) => {
@@ -193,15 +193,15 @@ const TodoApp = () => {
   }
 
   // 处理回车键添加待办事项
-  const handleKeyDown = (e) => {
+  const handleKeyDown = useCallback((e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       addTodo()
     }
-  }
+  }, [addTodo])
 
   // 获取过滤后的待办事项
-  const getFilteredTodos = () => {
+  const getFilteredTodos = useMemo(() => {
     let filtered = todos
     
     // 按状态过滤
@@ -219,18 +219,18 @@ const TodoApp = () => {
     }
     
     return filtered.sort((a, b) => (a.order_index || 0) - (b.order_index || 0))
-  }
+  }, [todos, filter, searchTerm])
 
   // 获取统计信息
-  const getStats = () => {
+  const getStats = useMemo(() => {
     const total = todos.length
     const completed = todos.filter(t => t.completed).length
     const active = total - completed
     return { total, completed, active }
-  }
+  }, [todos])
 
-  const filteredTodos = getFilteredTodos()
-  const { total, completed: completedCount, active: activeCount } = getStats()
+  const filteredTodos = getFilteredTodos
+  const { total, completed: completedCount, active: activeCount } = getStats
 
   if (loading) {
     return <LoadingSpinner />
@@ -338,41 +338,67 @@ const TodoApp = () => {
           {/* Error Message */}
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="mb-6 p-6 bg-red-500/10 border border-red-500/20 rounded-xl text-center"
             >
-              {error}
-              <button 
-                onClick={() => setError(null)}
-                className="ml-2 text-red-300 hover:text-red-200"
-              >
-                ✕
-              </button>
+              <div className="text-4xl mb-3">⚠️</div>
+              <h3 className="text-lg font-semibold text-red-300 mb-2">Oops! Something went wrong</h3>
+              <p className="text-red-400 mb-4">{error}</p>
+              <div className="flex justify-center gap-3">
+                <button 
+                  onClick={() => setError(null)}
+                  className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors"
+                >
+                  Dismiss
+                </button>
+                <button 
+                  onClick={() => window.location.reload()}
+                  className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <span>🔄</span>
+                  Try Again
+                </button>
+              </div>
             </motion.div>
           )}
 
           {/* Add Todo Input */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-10">
             <div className="flex-1 relative group">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={t('todo.placeholder')}
-                className="w-full px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 xl:py-6 bg-gradient-to-r from-gray-800/60 to-gray-700/60 border border-gray-600/50 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-300 text-base sm:text-lg lg:text-xl shadow-inner group-hover:border-gray-500/50 focus:shadow-lg focus:shadow-cyan-500/20"
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={t('todo.placeholder')}
+                  className="w-full px-4 sm:px-6 lg:px-8 py-3 sm:py-4 lg:py-5 xl:py-6 bg-gradient-to-r from-gray-800/60 to-gray-700/60 border border-gray-600/50 rounded-xl sm:rounded-2xl focus:ring-2 focus:ring-cyan-400/50 focus:border-cyan-400/50 text-white placeholder-gray-400 backdrop-blur-sm transition-all duration-300 text-base sm:text-lg lg:text-xl shadow-inner group-hover:border-gray-500/50 focus:shadow-lg focus:shadow-cyan-500/20"
+                  disabled={loading}
+                />
+                {loading && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-cyan-400">
+                    ⏳
+                  </div>
+                )}
+              </div>
               <div className="absolute inset-0 rounded-xl sm:rounded-2xl bg-gradient-to-r from-cyan-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
             </div>
             <motion.button
               onClick={addTodo}
-              disabled={!inputValue.trim()}
+              disabled={loading || !inputValue.trim()}
               whileHover={{ scale: 1.03, y: -2 }}
               whileTap={{ scale: 0.97 }}
               className="px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5 xl:py-6 bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-500 text-white font-bold rounded-xl sm:rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-cyan-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-base sm:text-lg lg:text-xl whitespace-nowrap min-w-[120px] sm:min-w-[140px] lg:min-w-[160px] relative overflow-hidden group flex-shrink-0"
             >
-              <span className="relative z-10">{t('todo.addNew')}</span>
+              {loading ? (
+                <div className="relative z-10 flex items-center justify-center">
+                  ⏳
+                </div>
+              ) : (
+                <span className="relative z-10">{t('todo.addNew')}</span>
+              )}
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
             </motion.button>
           </div>

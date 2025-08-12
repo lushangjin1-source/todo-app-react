@@ -1,30 +1,39 @@
 /* CSS变量定义 */
 :root {
-  /* 浅色主题 */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
-  --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --text-primary: #333333;
-  --text-secondary: #666666;
-  --text-muted: #999999;
-  --border-color: #e1e5e9;
-  --border-hover: #667eea;
-  --shadow: rgba(0, 0, 0, 0.1);
-  --shadow-hover: rgba(102, 126, 234, 0.1);
+  /* Light theme */
+  --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f8fafc;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --border-color: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.12);
+  --accent-primary: #667eea;
+  --accent-secondary: #48bb78;
+  --accent-danger: #f56565;
+  --accent-warning: #ed8936;
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.3);
 }
 
 /* 深色主题 */
 [data-theme="dark"] {
-  --bg-primary: #1a1a1a;
-  --bg-secondary: #2d2d2d;
-  --bg-gradient: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-  --text-primary: #ffffff;
+  /* Dark theme */
+  --bg-primary: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+  --bg-secondary: #2d3748;
+  --bg-tertiary: #4a5568;
+  --text-primary: #f7fafc;
   --text-secondary: #e2e8f0;
   --text-muted: #a0aec0;
   --border-color: #4a5568;
-  --border-hover: #667eea;
-  --shadow: rgba(0, 0, 0, 0.3);
-  --shadow-hover: rgba(102, 126, 234, 0.2);
+  --shadow-color: rgba(0, 0, 0, 0.4);
+  --accent-primary: #63b3ed;
+  --accent-secondary: #68d391;
+  --accent-danger: #fc8181;
+  --accent-warning: #f6ad55;
+  --glass-bg: rgba(45, 55, 72, 0.9);
+  --glass-border: rgba(160, 174, 192, 0.15);
 }
 
 /* 全局样式 */
@@ -35,15 +44,18 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-gradient);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   min-height: 100vh;
-  padding: 20px;
-  transition: background 0.3s ease;
+  overflow-x: hidden;
 }
 
 .app {
@@ -55,14 +67,30 @@ body {
 }
 
 .todo-container {
-  background: var(--bg-primary);
-  border-radius: 20px;
-  box-shadow: 0 20px 40px var(--shadow);
-  padding: 30px;
+  max-width: 900px;
+  margin: 2rem auto;
+  background: var(--glass-bg);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px var(--shadow-color), 0 0 0 1px var(--glass-border);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
   width: 100%;
-  max-width: 600px;
   min-height: 500px;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.todo-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+  opacity: 0.6;
 }
 
 .app-title {
@@ -80,105 +108,187 @@ body {
 
 /* 主题切换按钮 */
 .theme-toggle {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: var(--bg-primary);
-  border: 2px solid var(--border-color);
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 32px var(--shadow-color);
+  backdrop-filter: blur(12px);
+  z-index: 1000;
   color: var(--text-primary);
-  box-shadow: 0 4px 12px var(--shadow);
 }
 
 .theme-toggle:hover {
-  border-color: var(--border-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px var(--shadow-hover);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 12px 40px var(--shadow-color);
+  border-color: var(--accent-primary);
+  background: var(--accent-primary);
+  color: white;
+}
+
+.theme-toggle:active {
+  transform: translateY(-1px) scale(0.98);
+  transition: all 0.1s ease;
 }
 
 /* 输入区域 */
+.input-section {
+  margin-bottom: 2rem;
+}
+
 .input-container {
   display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .todo-input {
   flex: 1;
-  padding: 15px 20px;
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  font-size: 16px;
-  outline: none;
-  transition: all 0.3s ease;
-  background: var(--bg-primary);
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  font-size: 1rem;
+  background: var(--bg-secondary);
   color: var(--text-primary);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(8px);
 }
 
 .todo-input:focus {
-  border-color: var(--border-hover);
-  box-shadow: 0 0 0 3px var(--shadow-hover);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15), 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  background: var(--bg-secondary);
+}
+
+.todo-input::placeholder {
+  color: var(--text-muted);
+  transition: opacity 0.3s ease;
+}
+
+.todo-input:focus::placeholder {
+  opacity: 0.7;
 }
 
 .add-button {
-  padding: 15px 25px;
-  background: var(--bg-gradient);
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent-primary) 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: 16px;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  white-space: nowrap;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 140px;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.add-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.add-button:hover::before {
+  left: 100%;
 }
 
 .add-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px var(--shadow-hover);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+}
+
+.add-button:active {
+  transform: translateY(-1px) scale(0.98);
+  transition: all 0.1s ease;
 }
 
 /* 过滤器 */
-.filter-container {
+.filters {
   display: flex;
-  gap: 10px;
-  margin-bottom: 25px;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
-.filter-btn {
-  padding: 10px 20px;
-  border: 2px solid var(--border-color);
-  background: var(--bg-primary);
-  border-radius: 25px;
+.filter-button {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
   cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.filter-btn:hover {
-  border-color: var(--border-hover);
-  color: var(--border-hover);
+.filter-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(135deg, var(--accent-primary), #764ba2);
+  transition: width 0.3s ease;
+  z-index: -1;
 }
 
-.filter-btn.active {
-  background: var(--bg-gradient);
+.filter-button.active {
+  background: linear-gradient(135deg, var(--accent-primary), #764ba2);
   color: white;
   border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.filter-button.active::before {
+  width: 100%;
+}
+
+.filter-button:hover:not(.active) {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  color: var(--accent-primary);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
 }
 
 /* 待办事项列表 */
 .todo-list {
-  margin-bottom: 25px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .empty-state {
@@ -190,20 +300,41 @@ body {
 }
 
 .todo-item {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 20px;
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
-  margin-bottom: 10px;
-  transition: all 0.3s ease;
-  background: var(--bg-primary);
+  gap: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: grab;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.todo-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--accent-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .todo-item:hover {
-  border-color: var(--border-hover);
-  box-shadow: 0 4px 12px var(--shadow-hover);
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  border-color: var(--accent-primary);
+}
+
+.todo-item:hover::before {
+  opacity: 1;
 }
 
 .todo-item.completed {
@@ -212,11 +343,62 @@ body {
   opacity: 0.7;
 }
 
+.todo-item.dragging {
+  opacity: 0.7;
+  transform: rotate(3deg) scale(1.02);
+  cursor: grabbing;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
 .todo-checkbox {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--bg-secondary);
   cursor: pointer;
-  accent-color: #667eea;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.todo-checkbox:hover {
+  border-color: var(--accent-primary);
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.todo-checkbox.checked {
+  background: linear-gradient(135deg, var(--accent-primary), #764ba2);
+  border-color: transparent;
+  transform: scale(1.05);
+}
+
+.todo-checkbox.checked::after {
+  content: '✓';
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  animation: checkmark 0.3s ease-in-out;
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0) rotate(45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .todo-content {
@@ -226,15 +408,20 @@ body {
 
 .todo-text {
   display: block;
-  font-size: 16px;
+  font-size: 1rem;
   color: var(--text-primary);
   margin-bottom: 5px;
   word-break: break-word;
+  line-height: 1.6;
+  font-weight: 500;
+  transition: all 0.3s ease;
 }
 
 .completed .todo-text {
   text-decoration: line-through;
   color: var(--text-muted);
+  opacity: 0.6;
+  transform: scale(0.98);
 }
 
 .todo-date {
@@ -255,7 +442,46 @@ body {
 
 .todo-actions {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.todo-item:hover .todo-actions {
+  opacity: 1;
+}
+
+.action-button {
+  padding: 0.5rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.action-button:hover::before {
+  opacity: 0.1;
 }
 
 .edit-button,
@@ -269,23 +495,27 @@ body {
 }
 
 .edit-button {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(102, 126, 234, 0.1);
+  color: var(--accent-primary);
+  border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
 .edit-button:hover {
-  background: #ffeaa7;
-  transform: scale(1.1);
+  background: rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
 }
 
 .delete-button {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(245, 101, 101, 0.1);
+  color: var(--accent-danger);
+  border: 1px solid rgba(245, 101, 101, 0.2);
 }
 
 .delete-button:hover {
-  background: #f5c6cb;
-  transform: scale(1.1);
+  background: rgba(245, 101, 101, 0.15);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 16px rgba(245, 101, 101, 0.2);
 }
 
 /* 底部 */
@@ -303,6 +533,79 @@ body {
   color: var(--text-secondary);
   font-size: 14px;
   font-weight: 500;
+}
+
+/* 底部统计 */
+.todo-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border-color);
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  backdrop-filter: blur(8px);
+}
+
+.stats-text {
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stats-number {
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-size: 1rem;
+}
+
+.clear-completed {
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.1), rgba(245, 101, 101, 0.05));
+  color: var(--accent-danger);
+  border: 1px solid rgba(245, 101, 101, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 0.875rem;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.clear-completed::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.clear-completed:hover::before {
+  left: 100%;
+}
+
+.clear-completed:hover {
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.2), rgba(245, 101, 101, 0.1));
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(245, 101, 101, 0.2);
+}
+
+.clear-completed:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.clear-completed:disabled:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .clear-button {
@@ -360,6 +663,35 @@ body {
   margin-left: 8px;
 }
 
+/* 优先级标签 */
+.priority-badge {
+  padding: 0.375rem 0.875rem;
+  border-radius: 16px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.priority-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.priority-badge:hover::before {
+  left: 100%;
+}
+
 /* 优先级颜色 */
 .priority-high {
   border-left: 4px solid #ef4444;
@@ -375,14 +707,23 @@ body {
 
 .priority-low {
   color: #10b981;
+  background: linear-gradient(135deg, rgba(72, 187, 120, 0.15), rgba(72, 187, 120, 0.05));
+  border: 1px solid rgba(72, 187, 120, 0.3);
+  box-shadow: 0 2px 8px rgba(72, 187, 120, 0.1);
 }
 
 .priority-medium {
   color: #f59e0b;
+  background: linear-gradient(135deg, rgba(237, 137, 54, 0.15), rgba(237, 137, 54, 0.05));
+  border: 1px solid rgba(237, 137, 54, 0.3);
+  box-shadow: 0 2px 8px rgba(237, 137, 54, 0.1);
 }
 
 .priority-high {
   color: #ef4444;
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.15), rgba(245, 101, 101, 0.05));
+  border: 1px solid rgba(245, 101, 101, 0.3);
+  box-shadow: 0 2px 8px rgba(245, 101, 101, 0.1);
 }
 
 /* 待办事项优先级边框样式 */
@@ -483,59 +824,299 @@ body {
 }
 
 /* 响应式设计 */
-@media (max-width: 768px) {
-  .app {
-    padding-top: 20px;
-  }
-  
+@media (max-width: 1024px) {
   .todo-container {
-    margin: 0 10px;
-    padding: 20px;
+    max-width: 95%;
+    margin: 1rem auto;
+    padding: 1.5rem;
   }
-  
-  .app-title {
-    font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: 0;
   }
-  
+
+  .todo-container {
+    margin: 0.5rem;
+    padding: 1.25rem;
+    border-radius: 20px;
+    max-width: none;
+  }
+
   .input-container {
     flex-direction: column;
+    gap: 1rem;
   }
-  
-  .filter-container {
-    flex-wrap: wrap;
+
+  .add-button {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 1rem;
   }
-  
-  .footer {
-    flex-direction: column;
+
+  .filters {
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-button {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+    flex: 1;
+    min-width: 0;
     text-align: center;
   }
-  
+
   .todo-item {
-    padding: 15px;
+    padding: 1.25rem;
+    gap: 0.75rem;
+    border-radius: 12px;
   }
-  
+
+  .todo-text {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
   .todo-actions {
+    gap: 0.375rem;
+    opacity: 1; /* Always visible on mobile */
+  }
+
+  .action-button {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .theme-toggle {
+    top: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+  }
+
+  .priority-badge {
+    padding: 0.25rem 0.625rem;
+    font-size: 0.7rem;
+  }
+
+  .todo-stats {
     flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  .clear-completed {
+    width: 100%;
+    justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
   .todo-container {
-    margin: 0 5px;
-    padding: 15px;
+    margin: 0.25rem;
+    padding: 1rem;
+    border-radius: 16px;
   }
-  
-  .app-title {
-    font-size: 1.8rem;
-  }
-  
+
   .todo-input {
-    padding: 12px 15px;
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
   }
-  
+
   .add-button {
-    padding: 12px 20px;
+    padding: 0.875rem;
+    font-size: 0.9rem;
   }
+
+  .filter-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .todo-item {
+    padding: 1rem;
+    gap: 0.625rem;
+  }
+
+  .todo-checkbox {
+    width: 20px;
+    height: 20px;
+  }
+
+  .action-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .error-container {
+    min-height: 300px;
+    padding: 1.5rem;
+  }
+
+  .error-icon {
+    font-size: 3rem;
+  }
+
+  .error-title {
+    font-size: 1.25rem;
+  }
+
+  .error-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .retry-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* 错误处理样式 */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  animation: shake 0.5s ease-in-out;
+}
+
+.error-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.error-message {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.error-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.retry-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.retry-button:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.retry-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* 加载状态样式 */
+.input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.input-loading {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--accent-primary);
+  font-size: 1.2rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.button-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 动画关键帧 */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* 禁用状态样式 */
+.todo-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.add-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.add-button:disabled:hover {
+  transform: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 优先级选择器禁用状态 */
+.priority-selector.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.priority-selector.disabled .priority-button {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.priority-selector.disabled .priority-button:hover {
+  transform: none !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* 动画效果 */

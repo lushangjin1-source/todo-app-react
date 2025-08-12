@@ -8,14 +8,46 @@ const LoginForm = ({ onToggleMode }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [showResendButton, setShowResendButton] = useState(false)
   const { signIn, loading, error, success } = useAuth()
   const { t } = useLanguage()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!email || !password) return
     
-    await signIn(email, password)
+    if (!email || !password) {
+      return
+    }
+    
+    const result = await signIn(email, password)
+    
+    // Check if error is related to email verification
+    if (result?.error && (result.error.message.includes('验证') || result.error.message.includes('confirm'))) {
+      setShowResendButton(true)
+    } else {
+      setShowResendButton(false)
+    }
+  }
+  
+  const handleResendVerification = async () => {
+    if (!email) return
+    
+    try {
+      // Import supabase client
+      const { supabase } = await import('../../lib/supabase')
+      const { error } = await supabase.auth.resend({
+        type: 'signup',
+        email: email
+      })
+      
+      if (error) {
+        console.error('Resend error:', error)
+      } else {
+        alert('验证邮件已重新发送，请检查您的邮箱。')
+      }
+    } catch (error) {
+      console.error('Resend failed:', error)
+    }
   }
 
   return (
@@ -109,6 +141,15 @@ const LoginForm = ({ onToggleMode }) => {
             className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm"
           >
             {error}
+            {showResendButton && (
+              <button
+                type="button"
+                onClick={handleResendVerification}
+                className="mt-2 text-blue-600 hover:text-blue-800 underline text-sm"
+              >
+                重新发送验证邮件
+              </button>
+            )}
           </motion.div>
         )}
 

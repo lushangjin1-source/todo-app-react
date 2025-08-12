@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDownIcon, ExclamationCircleIcon, MinusCircleIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import { useLanguage } from '../contexts/LanguageContext'
 
-function PrioritySelector({ priority, onPriorityChange, size = 'normal', readOnly = false, todos = [] }) {
+function PrioritySelector({ priority, onPriorityChange, size = 'normal', readOnly = false, todos = [], disabled = false }) {
   const [isOpen, setIsOpen] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(null)
   const { t } = useLanguage()
@@ -58,14 +58,15 @@ function PrioritySelector({ priority, onPriorityChange, size = 'normal', readOnl
   return (
     <div className="relative">
       <motion.button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => !disabled && setIsOpen(!isOpen)}
         whileHover={{ scale: 1.03, y: -1 }}
         whileTap={{ scale: 0.97 }}
+        disabled={disabled}
         className={`flex items-center space-x-4 px-8 py-5 rounded-2xl border transition-all duration-300 shadow-lg relative overflow-hidden group ${
           isOpen 
             ? 'bg-gradient-to-r from-gray-700/60 to-gray-600/60 border-cyan-400 ring-2 ring-cyan-400/30 shadow-cyan-500/20' 
             : 'bg-gradient-to-r from-gray-800/60 to-gray-700/60 border-gray-600/50 hover:border-gray-500/70 hover:shadow-xl'
-        }`}
+        } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         <div className={`flex items-center space-x-3 ${currentPriority.textColor} relative z-10`}>
           <div className={`p-1.5 rounded-full bg-gradient-to-r ${currentPriority.gradient} shadow-lg`}>
@@ -98,13 +99,15 @@ function PrioritySelector({ priority, onPriorityChange, size = 'normal', readOnl
                 <motion.button
                   key={p.value}
                   onClick={() => {
-                    const recentTodos = getRecentTodosByPriority(p.value)
-                    if (recentTodos.length > 0) {
-                      setShowSuggestions(p.value)
-                      setTimeout(() => setShowSuggestions(null), 3000) // 3秒后自动隐藏
+                    if (!disabled) {
+                      const recentTodos = getRecentTodosByPriority(p.value)
+                      if (recentTodos.length > 0) {
+                        setShowSuggestions(p.value)
+                        setTimeout(() => setShowSuggestions(null), 3000) // 3秒后自动隐藏
+                      }
+                      onPriorityChange(p.value)
+                      setIsOpen(false)
                     }
-                    onPriorityChange(p.value)
-                    setIsOpen(false)
                   }}
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -184,4 +187,4 @@ function PrioritySelector({ priority, onPriorityChange, size = 'normal', readOnl
   )
 }
 
-export default PrioritySelector;
+export default memo(PrioritySelector);
