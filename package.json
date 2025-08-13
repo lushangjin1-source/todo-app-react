@@ -5,7 +5,7 @@
   "description": "现代化待办事项应用，支持用户认证、实时同步、拖拽排序等功能",
   "type": "module",
   "keywords": ["todo", "react", "supabase", "typescript", "vite"],
-  "author": "Jin ar <707583913@qq.com>",
+  "author": "Jin <lushangjin1@gmail.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
