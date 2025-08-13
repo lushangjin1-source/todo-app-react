@@ -9,9 +9,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/todo-app.git"
+    "url": "https://github.com/lushangjin1-source/todo-app.git"
   },
-  "homepage": "https://github.com/your-username/todo-app#readme",
+  "homepage": "https://github.com/lushangjin1-source/todo-app#readme",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
